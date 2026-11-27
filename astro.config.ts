@@ -8,7 +8,8 @@ import { htmlImages } from './src/html-images.ts';
 
 // config runs before astro env is available, so read it via vite directly
 const env = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
-const SITE_URL = env.SITE_URL;
+// on Netlify, URL is the site's main address and is set automatically
+const SITE_URL = env.SITE_URL || env.URL;
 if (!SITE_URL) throw new Error('SITE_URL is required (see .env.example)');
 
 // https://astro.build/config
