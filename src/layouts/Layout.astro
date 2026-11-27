@@ -1,0 +1,95 @@
+---
+import "../styles/global.css";
+import { Image } from "astro:assets";
+import fire from "../assets/fire.gif";
+import rss from "../assets/rss.webp";
+import ravens from "../assets/ravner-bakgrunn.png";
+import frenImg from "../assets/fren.png";
+interface Props {
+  title: string;
+  description: string;
+  image?: ImageMetadata;
+  fren?: boolean;
+}
+const { title, description, image, fren = true } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = image && new URL(image.src, Astro.site);
+
+// ravens flapping across the background: height on screen, size, crossing time, start offset, wingbeat
+const flyers = [
+  { y: "8vh", s: 300, d: "26s", delay: "-4s", flap: "0.55s" },
+  { y: "36vh", s: 180, d: "34s", delay: "-19s", flap: "0.45s" },
+  { y: "58vh", s: 400, d: "22s", delay: "-11s", flap: "0.65s" },
+  { y: "80vh", s: 220, d: "30s", delay: "-27s", flap: "0.5s" },
+];
+---
+
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/gif" href="/favicon.gif" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {imageUrl && <meta property="og:image" content={imageUrl} />}
+    {imageUrl && <meta name="twitter:card" content="summary_large_image" />}
+    <link rel="alternate" type="application/rss+xml" href="/rss.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Metal+Mania&family=UnifrakturMaguntia&display=swap"
+    />
+  </head>
+  <body class="bg-black" style={`--ravens:url(${ravens.src})`}>
+    <div class="sky" aria-hidden="true">
+      <div class="sky-tile"></div>
+      {flyers.map((f) => (
+        <svg
+          class="flyer"
+          viewBox="0 0 100 50"
+          width={f.s}
+          style={`top:${f.y};--d:${f.d};--delay:${f.delay};--flap:${f.flap}`}
+        >
+          <path class="wing" d="M50 28 C42 12 24 6 2 14 C18 16 30 22 44 32 Z" />
+          <path class="wing" d="M50 28 C58 12 76 6 98 14 C82 16 70 22 56 32 Z" />
+          <ellipse cx="50" cy="30" rx="7" ry="5" />
+          <path d="M56 28 L64 26 L58 32 Z" />
+          <path d="M45 33 L38 40 L48 36 Z" />
+        </svg>
+      ))}
+    </div>
+    <div class="container hazard h-3 mt-4 p-0" aria-hidden="true"></div>
+    <main class="container panel py-4">
+      <slot />
+    </main>
+
+    {fren && (
+      <a href="/fren" class="fren-link">
+        <Image src={frenImg} alt="" width={320} loading="eager" />
+        <span class="section-bar block text-center text-sm">fren?</span>
+      </a>
+    )}
+
+    <footer class="container panel px-0 pt-2 mt-4 mb-4 bg-black text-steel text-center text-sm">
+      <div class="flex justify-between items-center gap-2 px-2 font-stencil tracking-widest">
+        <span>&copy; {new Date().getFullYear()} · kaw kaw</span>
+
+        <a href="/rss.xml" class="flex items-center gap-2 no-underline text-steel">
+          RSS
+          <Image src={rss} alt="RSS-feed" height={20} />
+        </a>
+      </div>
+
+      <div
+        class="h-15 mt-2 bg-repeat-x bg-bottom"
+        style={`background-image:url(${fire.src})`}
+      ></div>
+    </footer>
+  </body>
+</html>

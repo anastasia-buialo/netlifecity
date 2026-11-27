@@ -1,0 +1,30 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import maake from "../assets/maake.jpg";
+---
+
+<Layout title="fren?" description="kun om du liker måker" fren={false}>
+  <h1 class="font-metal font-normal text-ice text-center mt-0">kun om du liker måker</h1>
+
+  <div class="pfp mx-auto max-w-sm">
+    <Image
+      src={maake}
+      alt="Svart-hvitt bilde av en person med briller som klemmer og kysser en ung måke som sprer den ene vingen"
+      width={720}
+      loading="eager"
+    />
+  </div>
+
+  <div class="mt-6 aspect-video">
+    <iframe
+      class="w-full h-full"
+      src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&playsinline=1"
+      title="Låt for måkevenner"
+      frameborder="0"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen></iframe>
+  </div>
+
+  <p class="text-center"><a href="/">← tilbake</a></p>
+</Layout>

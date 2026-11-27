@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+/* 2008 profile page meets nu-metal merch table: black, steel and blue */
+@theme {
+  --font-sans: Verdana, Tahoma, Arial, sans-serif;
+  --font-serif: Georgia, "Times New Roman", Times, serif;
+  --font-mono: "Courier New", Courier, monospace;
+  --font-fraktur: "UnifrakturMaguntia", "Old English Text MT", serif;
+  --font-metal: "Metal Mania", Impact, sans-serif;
+  --font-stencil: "Black Ops One", Impact, sans-serif;
+
+  /* text scale mirrors browser default heading sizes */
+  --text-*: initial;
+  --text-xs: 0.67rem;
+  --text-sm: 0.83rem;
+  --text-base: 1rem;
+  --text-lg: 1.17rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-paper: #0d0d0f;
+  --color-shade: #3a3a40;
+  --color-steel: #8a8a94;
+  --color-ink: #d6d6dc;
+  --color-link: #6699ff;
+  --color-visited: #99aacc;
+  --color-ice: #99bbff;
+  --color-blue: #3366ff;
+  --color-rust: #993300;
+  --color-gold: #ffcc00;
+  --color-lime: #ccff33;
+
+  --shadow-*: initial;
+  --shadow: 0 0 0 1px #000, 0 0 24px rgb(0 0 0 / 0.9);
+  --shadow-glow: 0 0 12px color-mix(in srgb, var(--color-blue) 60%, transparent);
+}
+
+@layer base {
+  body {
+    @apply bg-black text-ink font-sans text-sm leading-relaxed;
+  }
+  a {
+    @apply text-link underline visited:text-visited hover:text-white;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  /* restore user-agent heading sizes that preflight removes */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold text-white;
+    margin-block: 0.67em;
+  }
+  h1 {
+    font-size: 2em;
+  }
+  h2 {
+    font-size: 1.5em;
+    margin-block: 0.83em;
+  }
+  h3 {
+    font-size: 1.17em;
+    margin-block: 1em;
+  }
+  h4 {
+    font-size: 1em;
+    margin-block: 1.33em;
+  }
+  h5 {
+    font-size: 0.83em;
+    margin-block: 1.67em;
+  }
+  h6 {
+    font-size: 0.67em;
+    margin-block: 2.33em;
+  }
+  p,
+  ul,
+  ol,
+  pre {
+    margin-block: 1em;
+  }
+  blockquote {
+    margin: 1em 40px;
+    @apply italic border-l-4 border-blue pl-4;
+  }
+  hr {
+    margin-block: 0.5em;
+    @apply border-t border-shade;
+  }
+  ul {
+    @apply list-disc pl-10;
+  }
+  ol {
+    @apply list-decimal pl-10;
+  }
+  ::selection {
+    @apply bg-blue text-white;
+  }
+}
+
+@utility container {
+  max-width: 640px;
+  margin-inline: auto;
+  padding-inline: 0.75rem;
+  background: var(--color-paper);
+}
+
+/* ravens behind everything: the photo tiled and drifting, with a few birds flapping across */
+@utility sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at top, transparent 0%, rgb(0 0 0 / 0.85) 75%),
+      rgb(0 0 0 / 0.5);
+  }
+}
+@utility sky-tile {
+  position: absolute;
+  inset: -148px;
+  background: var(--ravens) 0 0 / 148px repeat;
+  animation: sky-drift 24s linear infinite;
+}
+@keyframes sky-drift {
+  to { transform: translate(-148px, -148px); }
+}
+
+@utility flyer {
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  fill: #000;
+  filter: drop-shadow(0 0 6px rgb(51 102 255 / 0.45));
+  animation: fly var(--d) linear var(--delay) infinite both;
+  & .wing {
+    transform-box: view-box;
+    transform-origin: 50px 28px;
+    animation: flap var(--flap, 0.42s) ease-in-out infinite alternate;
+  }
+}
+@keyframes fly {
+  0% { transform: translate(-20vw, 0) rotate(4deg); }
+  25% { transform: translate(15vw, -3vh) rotate(-3deg); }
+  50% { transform: translate(50vw, 1vh) rotate(3deg); }
+  75% { transform: translate(85vw, -4vh) rotate(-4deg); }
+  100% { transform: translate(120vw, 0) rotate(2deg); }
+}
+@keyframes flap {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(-0.55); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sky-tile,
+  .flyer,
+  .flyer .wing {
+    animation: none;
+  }
+  .flyer {
+    display: none;
+  }
+}
+
+/* brushed steel frame, like a scratched merch-table flight case */
+@utility panel {
+  border: 2px solid var(--color-shade);
+  outline: 1px solid #000;
+  box-shadow:
+    inset 0 0 0 1px #1c1c22,
+    var(--shadow);
+}
+
+/* the section header bar every profile page had */
+@utility section-bar {
+  @apply font-stencil text-white uppercase tracking-widest px-2 py-1;
+  background: linear-gradient(90deg, #001a66, var(--color-blue));
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* barcode strip, nu-metal merch staple */
+@utility barcode {
+  height: 28px;
+  background: repeating-linear-gradient(
+    90deg,
+    #d6d6dc 0 2px,
+    transparent 2px 4px,
+    #d6d6dc 4px 5px,
+    transparent 5px 9px,
+    #d6d6dc 9px 12px,
+    transparent 12px 13px,
+    #d6d6dc 13px 14px,
+    transparent 14px 18px
+  );
+  opacity: 0.85;
+}
+
+/* rusted hazard tape */
+@utility hazard {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-rust) 0 10px,
+    #000 10px 20px
+  );
+}
+
+/* profile picture frame */
+@utility pfp {
+  @apply bg-white p-1 overflow-hidden;
+  border: 1px solid var(--color-steel);
+  box-shadow: 3px 3px 0 #000;
+}
+
+/* the "fren?" image link lurking outside the page, bottom left */
+@utility fren-link {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 10;
+  width: 160px;
+  @apply panel bg-black no-underline;
+  rotate: -4deg;
+  transition: rotate 0.2s ease, scale 0.2s ease;
+  &:hover,
+  &:focus-visible {
+    rotate: 0deg;
+    scale: 1.05;
+  }
+  @media (max-width: 900px) {
+    width: 96px;
+    left: 0.5rem;
+    bottom: 0.5rem;
+  }
+}

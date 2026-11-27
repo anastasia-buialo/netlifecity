@@ -1,0 +1,75 @@
+---
+import { render } from "astro:content";
+import { getPosts } from "../posts";
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import raven from "../assets/ravn-maskot.png";
+
+const posts = await getPosts();
+const lastLogin = new Date().toLocaleDateString("no", { timeZone: "Europe/Oslo" });
+---
+
+<Layout title="Anastasia" description="UX-designer, visual designer, concept maker, goth kid, and a bird lady">
+  <section class="relative flex gap-4 items-start">
+    <div class="w-32 shrink-0">
+      <div class="pfp">
+        <Image src={raven} alt="Ravnemaskoten" width={240} loading="eager" class="grayscale contrast-125 " />
+      </div>
+      <p class="mt-2 mb-0 text-xs text-lime font-bold">● Online nå!</p>
+    </div>
+
+    <div class="min-w-0">
+      <h1 class="font-fraktur font-normal text-white mt-0 mb-1 leading-none" style="text-shadow: 0 0 10px var(--color-blue)">
+        Anastasia
+      </h1>
+      <p class="mt-0">UX-designer, visual designer, concept maker, goth kid, and a bird lady</p>
+      <dl class="grid grid-cols-[auto_1fr] gap-x-3 text-xs m-0">
+        <dt class="text-steel">Humør:</dt><dd>✶ grublende ✶</dd>
+        <dt class="text-steel">Sist innlogget:</dt><dd>{lastLogin}</dd>
+      </dl>
+    </div>
+
+    <span class="absolute top-0 right-0 text-gold text-xl select-none" aria-hidden="true">✦</span>
+  </section>
+
+  <div class="mt-4 flex items-center gap-3" aria-hidden="true">
+    <div class="barcode flex-1"></div>
+    <span class="font-stencil text-steel text-xs tracking-[0.4em]">0 1 2 3 4 5 6 7 8</span>
+  </div>
+
+  <h2 class="section-bar text-base mt-4 mb-2">Siste innlegg</h2>
+  <div class="space-y-3">
+    {posts.map(async (post, i) => {
+      const { Content } = await render(post);
+      const { title, pubDate, background } = post.data;
+      return (
+        <article
+          id={post.id}
+          class:list={["panel flex gap-3 p-3", background ? "bg-cover bg-center [text-shadow:0_1px_3px_#000]" : "bg-black/60"]}
+          style={background && `background-image:url(${background.src})`}
+        >
+          <div class="w-18 shrink-0 text-center">
+            <div class="pfp">
+              <Image
+                src={raven}
+                alt=""
+                width={144}
+                class:list={["grayscale contrast-125 ", i % 2 === 1 && "-scale-x-100"]}
+              />
+            </div>
+            <span class="block mt-1 font-stencil text-xs text-steel">#{String(posts.length - i).padStart(2, "0")}</span>
+          </div>
+
+          <div class="min-w-0 flex-1">
+            <h3 class="m-0 font-metal font-normal text-xl text-ice tracking-wide">{title}</h3>
+            <time datetime={pubDate.toISOString()} class:list={["text-xs", background ? "text-ink" : "text-steel"]}>
+              {pubDate.toLocaleDateString("no", { timeZone: "Europe/Oslo" })}
+            </time>
+
+            <Content />
+          </div>
+        </article>
+      );
+    })}
+  </div>
+</Layout>
